@@ -6,7 +6,7 @@ import com.mbadady.simpleBankApp.dto.request.AccountRequest;
 import java.util.List;
 
 public interface AccountService {
-   String createNewAccount(AccountOpeningRequest accountOpeningRequest, Long userId);
+   String createNewAccount(AccountOpeningRequest accountOpeningRequest, String emailId);
 
    AccountRequest findAccountByAccountNUmber(String accountNumber);
 

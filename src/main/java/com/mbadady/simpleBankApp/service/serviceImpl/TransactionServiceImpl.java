@@ -36,6 +36,9 @@ public class TransactionServiceImpl implements TransactionService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private EmailSenderService emailSenderService;
+
 
     @Override
     public List<TransactionRequest> findTransactionsByAccountNumber(String accountNumber) {
@@ -71,8 +74,10 @@ public class TransactionServiceImpl implements TransactionService {
         String narration = transferFundsRequest.getNarration();
 
 
+
         Account fromAccount = accountRepository.findByAccountNumber(fromAccountNumber).orElseThrow(()->
                 new ResourceNotFoundException("Account", "account number", fromAccountNumber));
+
         Account toAccount = accountRepository.findByAccountNumber(toAccountNumber).orElseThrow(()->
                 new ResourceNotFoundException("Account", "account number", toAccountNumber));
 
@@ -113,6 +118,12 @@ public class TransactionServiceImpl implements TransactionService {
 
 
                 transactionRepository.save(toTransactionAccount);
+
+                emailSenderService.emailSender(toAccount.getUser().getEmailId(), "CREDIT TRANSACTION NOTIFICATION",
+                        "Success: " + amount + " was transferred to Account Number " + toAccountNumber );
+
+                emailSenderService.emailSender(fromAccount.getUser().getEmailId(), "DEBIT TRANSACTION NOTIFICATION",
+                        "Success: " + amount + " was debited from Account Number " + fromAccountNumber );
 
                 return "Success: " + amount + " was transferred to Account Number " + toAccountNumber;
             }
@@ -155,8 +166,10 @@ public class TransactionServiceImpl implements TransactionService {
                 throw new BankApiException(HttpStatus.BAD_REQUEST, "You have exceeded your daily transaction limit");
             }
 
+            emailSenderService.emailSender(fromAccount.getUser().getEmailId(), "DEBIT TRANSACTION NOTIFICATION",
+                    "Success: " + amount + " was debited from Account Number " + fromAccountNumber );
 
-            return "An amount of "+ amount + " withdrawn successfully";
+            return "Success: An amount of " + amount + " withdrawn successfully";
 
         } else {
             throw new BankApiException(HttpStatus.BAD_REQUEST, "Insufficient funds");
@@ -194,6 +207,9 @@ public class TransactionServiceImpl implements TransactionService {
 
 
         transactionRepository.save(toTransactionAccount);
+
+        emailSenderService.emailSender(toAccount.getUser().getEmailId(), "CREDIT TRANSACTION NOTIFICATION",
+                "Success: " + amount + " was deposited to Account Number " + toAccountNumber );
 
         return "Success: An amount of " + amount + " was deposited successfully to " + toAccountNumber;
 

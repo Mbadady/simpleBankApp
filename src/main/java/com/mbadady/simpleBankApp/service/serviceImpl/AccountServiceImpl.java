@@ -26,6 +26,9 @@ public class AccountServiceImpl implements AccountService {
     private UserRepository userRepository;
 
     @Autowired
+    private EmailSenderService emailSenderService;
+
+    @Autowired
     private AccountRepository accountRepository;
 
     public AccountServiceImpl(UserRepository userRepository, AccountRepository accountRepository) {
@@ -34,10 +37,10 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public String createNewAccount(AccountOpeningRequest accountOpeningRequest, Long userId) {
+    public String createNewAccount(AccountOpeningRequest accountOpeningRequest, String emailId) {
 
-        User user = userRepository.findById(userId).orElseThrow(() ->
-                new ResourceNotFoundException("User", "id", userId));
+        User user = userRepository.findByEmailId(emailId).orElseThrow(() ->
+                new ResourceNotFoundException("User", "email", emailId));
 
         BigDecimal limit = accountOpeningRequest.getDailyTransactionLimit();
 
@@ -54,6 +57,8 @@ public class AccountServiceImpl implements AccountService {
         account.setAccountNumber(generateAccountNumber());
 
         accountRepository.save(account);
+
+        emailSenderService.emailSender(emailId, "Account Notification", "Account Successfully created: Your account number is " + account.getAccountNumber());
 
 
         return "Account Successfully created: Your account number is " + account.getAccountNumber();

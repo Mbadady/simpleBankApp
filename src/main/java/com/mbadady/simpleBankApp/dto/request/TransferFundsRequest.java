@@ -15,4 +15,5 @@ public class TransferFundsRequest {
     private String toAccount;
     private BigDecimal transactionAmount;
     private String narration;
+//    private String emailId;
 }

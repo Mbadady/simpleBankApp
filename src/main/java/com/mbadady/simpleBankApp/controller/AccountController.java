@@ -3,7 +3,10 @@ package com.mbadady.simpleBankApp.controller;
 
 import com.mbadady.simpleBankApp.dto.request.AccountOpeningRequest;
 import com.mbadady.simpleBankApp.dto.request.AccountRequest;
+import com.mbadady.simpleBankApp.dto.request.UserRequest;
+import com.mbadady.simpleBankApp.model.User;
 import com.mbadady.simpleBankApp.service.AccountService;
+import com.mbadady.simpleBankApp.service.serviceImpl.EmailSenderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +30,15 @@ public class AccountController {
         this.accountService = accountService;
     }
 
+    @Autowired
+    private EmailSenderService emailSenderService;
+
     @ApiOperation(value = "Create an account resource")
     @PreAuthorize("hasRole('USER')")
-    @PostMapping("/accounts/{userId}")
-    public ResponseEntity<String> addAccount(@RequestBody AccountOpeningRequest accountOpeningRequest,
-                                             @PathVariable Long userId){
-        return new ResponseEntity<>(accountService.createNewAccount(accountOpeningRequest, userId), HttpStatus.CREATED);
+    @PostMapping("/accounts/{emailId}")
+    public ResponseEntity<String> createAccount(@RequestBody AccountOpeningRequest accountOpeningRequest,
+                                             @PathVariable String emailId){
+        return new ResponseEntity<>(accountService.createNewAccount(accountOpeningRequest, emailId), HttpStatus.CREATED);
     }
 
     @ApiOperation(value = "Get all accounts by a user")

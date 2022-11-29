@@ -5,6 +5,7 @@ import com.mbadady.simpleBankApp.dto.request.UserRequest;
 import com.mbadady.simpleBankApp.dto.response.JWTResponse;
 import com.mbadady.simpleBankApp.security.JwtTokenProvider;
 import com.mbadady.simpleBankApp.service.UserService;
+import com.mbadady.simpleBankApp.service.serviceImpl.EmailSenderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,10 @@ public class AuthController {
     AuthenticationManager authenticationManager;
 
     @Autowired
-    JwtTokenProvider jwtTokenProvider;
+    private JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
+    private EmailSenderService emailSenderService;
 
     private UserService userService;
 
@@ -54,12 +58,15 @@ public class AuthController {
 
         JWTResponse jwtResponse = new JWTResponse(token);
 
+//        emailSenderService.emailSender(request.getEmailId(), "Login notification", "Login successful" );
+
         return new ResponseEntity<>(jwtResponse, HttpStatus.OK);
     }
 
     @ApiOperation(value = "Rest Api to Signup or register a User")
     @PostMapping("/signup")
     public ResponseEntity<String> registerUser(@Valid @RequestBody UserRequest userRequest){
+
         return new ResponseEntity<>(userService.signUp(userRequest), HttpStatus.CREATED);
     }
 

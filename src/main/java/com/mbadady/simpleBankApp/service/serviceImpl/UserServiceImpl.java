@@ -26,6 +26,9 @@ public class UserServiceImpl implements UserService {
     private RoleRepository roleRepository;
 
     @Autowired
+    private EmailSenderService emailSenderService;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
 
@@ -61,6 +64,7 @@ public class UserServiceImpl implements UserService {
 
 
 
+        emailSenderService.emailSender(userRequest.getEmailId(),"User Notification", "Account User Created Successfully");
         return "User Created Successfully";
     }
 
@@ -97,6 +101,8 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
 
         userRepository.save(user);
+
+        emailSenderService.emailSender(userRequest.getEmailId(), "User notification", "Account user details updated successfully");
 
         return "User Details Updated Successfully";
     }
