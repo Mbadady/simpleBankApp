@@ -7,6 +7,11 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import javax.annotation.PostConstruct;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+
 @SpringBootApplication
 public class SimpleBankAppApplication implements CommandLineRunner {
 
@@ -20,13 +25,22 @@ public class SimpleBankAppApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		Role adminRole = new Role();
-		adminRole.setName("ROLE_ADMIN");
-		roleRepository.save(adminRole);
-//
-		Role userRole = new Role();
-		userRole.setName("ROLE_USER");
-		roleRepository.save(userRole);
 
+		Optional<Role> adminRole = roleRepository.findByName("ROLE_ADMIN");
+		Optional<Role> userRole = roleRepository.findByName("ROLE_USER");
+
+		if(adminRole.isEmpty()){
+			Role role = new Role();
+			role.setName("ROLE_ADMIN");
+			roleRepository.save(role);
+
+		}
+
+		if(userRole.isEmpty()){
+			Role role = new Role();
+			role.setName("ROLE_USER");
+			roleRepository.save(role);
+		}
 	}
+
 }

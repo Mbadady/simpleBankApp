@@ -55,8 +55,8 @@ public class UserRequest {
     private String gender;
 
     private AddressDetails address;
-//    private Set<Role> roles;
+    private Set<Role> roles;
     private Set<Account> accounts;
-    private Set<String> strRoles;
+//    private Set<String> strRoles;
 
 }
