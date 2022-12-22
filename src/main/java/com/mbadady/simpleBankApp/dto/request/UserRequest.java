@@ -5,10 +5,7 @@ import com.mbadady.simpleBankApp.model.Account;
 import com.mbadady.simpleBankApp.model.AddressDetails;
 import com.mbadady.simpleBankApp.model.Role;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.*;
@@ -21,6 +18,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class UserRequest {
 
     @ApiModelProperty(notes = "first name", required = true)

@@ -15,6 +15,7 @@ import java.sql.Timestamp;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class TransactionRequest {
     private String accountNumber;
     private BigDecimal transactionAmount;

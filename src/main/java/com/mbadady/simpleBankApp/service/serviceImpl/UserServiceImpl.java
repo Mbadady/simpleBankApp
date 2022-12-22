@@ -1,5 +1,6 @@
 package com.mbadady.simpleBankApp.service.serviceImpl;
 
+import com.mbadady.simpleBankApp.config.SecurityConfig;
 import com.mbadady.simpleBankApp.customException.BankApiException;
 import com.mbadady.simpleBankApp.customException.ResourceNotFoundException;
 import com.mbadady.simpleBankApp.dao.RoleRepository;
@@ -20,8 +21,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private RoleRepository roleRepository;
@@ -29,10 +28,15 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private EmailSenderService emailSenderService;
 
-    @Autowired
+    private UserRepository userRepository;
+
     private PasswordEncoder passwordEncoder;
 
-
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     public List<UserRequest> findAll() {

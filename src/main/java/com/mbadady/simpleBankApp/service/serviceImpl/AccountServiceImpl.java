@@ -131,6 +131,7 @@ public class AccountServiceImpl implements AccountService {
 
     private String generateAccountNumber() {
 
+//        converting the string of account number to int, to add 1 to it to make it sequential
         int lastAccountNumberToInt = Integer.parseInt(accountRepository.findTopByOrderByIdDesc().getAccountNumber()) + 1;
 
         return String.format("%010d", lastAccountNumberToInt);

@@ -2,10 +2,7 @@ package com.mbadady.simpleBankApp.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.mbadady.simpleBankApp.enums.TransactionType;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -16,6 +13,7 @@ import java.sql.Timestamp;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 
 @Entity
 @Table(name = "transactions")
@@ -40,7 +38,7 @@ public class Transaction {
 
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY, cascade = {
-            CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH
+            CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH
     })
     @JoinColumn(name = "account_id")
     private Account account;
