@@ -8,6 +8,7 @@ import com.mbadady.simpleBankApp.dto.request.UserRequest;
 import com.mbadady.simpleBankApp.model.AddressDetails;
 import com.mbadady.simpleBankApp.model.Role;
 import com.mbadady.simpleBankApp.model.User;
+import com.mbadady.simpleBankApp.service.serviceImpl.EmailSenderService;
 import com.mbadady.simpleBankApp.service.serviceImpl.UserServiceImpl;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,9 +37,11 @@ public class UserServiceTests {
     @Mock
     private RoleRepository roleRepository;
 
+    @Mock
+    private EmailSenderService emailSenderServic;
 
     @Mock
-    private SecurityConfig securityConfig;
+    private PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -47,6 +50,8 @@ public class UserServiceTests {
 
 
     private UserRequest userRequest;
+
+    private Role role;
 
     @BeforeEach
     void setUp(){
@@ -79,6 +84,11 @@ public class UserServiceTests {
                         .country("Nigeria").build())
                 .roles(Set.of(Role.builder().name("ADMIN").build(), Role.builder().name("USER").build()))
                 .build();
+
+        role = Role.builder()
+                .id(3L)
+                .name("ROLE_USER")
+                .build();
     }
 
     // Junit for
@@ -87,11 +97,15 @@ public class UserServiceTests {
         public void givenEmployeeObject_whenSave_thenReturnSavedEmployee(){
             // given- precondition or setup
 
-            BDDMockito.given(userRepository.findByEmailId(user.getEmailId())).willReturn(Optional.empty());
-            BDDMockito.given(userRepository.findByPhoneNumber(user.getPhoneNumber())).willReturn(Optional.empty());
+            BDDMockito.when(userRepository.existsByEmailId(user.getEmailId())).thenReturn(false);
+            BDDMockito.given(userRepository.existsByPhoneNumber(user.getPhoneNumber())).willReturn(false);
+            BDDMockito.when(passwordEncoder.encode(userRequest.getPassword())).thenReturn(userRequest.getPassword());
+            BDDMockito.when(roleRepository.findByName("ROLE_USER")).thenReturn(Optional.of(role));
+            BDDMockito.doNothing()
+                    .when(emailSenderServic).emailSender(userRequest.getEmailId(), "User Notification", "Account User Created Successfully");
 
-//            BDDMockito.when(securityConfig.passwordEncoder()).thenReturn(new BCryptPasswordEncoder());
-            BDDMockito.given(userRepository.save(user)).willReturn(user);
+
+//            BDDMockito.given(userRepository.save(user)).willReturn(user);
 
             // when- action or behaviour we are going to test
 

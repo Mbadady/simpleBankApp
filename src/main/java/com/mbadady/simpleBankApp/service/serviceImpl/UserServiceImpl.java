@@ -22,10 +22,10 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
+
     private RoleRepository roleRepository;
 
-    @Autowired
+
     private EmailSenderService emailSenderService;
 
     private UserRepository userRepository;
@@ -33,9 +33,11 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder,RoleRepository roleRepository, EmailSenderService emailSenderService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.roleRepository = roleRepository;
+        this.emailSenderService = emailSenderService;
     }
 
     @Override
@@ -134,8 +136,8 @@ public class UserServiceImpl implements UserService {
         user.setPhoneNumber(userRequest.getPhoneNumber());
         user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
 
-        Role roles = roleRepository.findByName("ROLE_USER").isPresent() ? roleRepository.findByName("ROLE_USER").get(): null;
-
+        Role roles = roleRepository.findByName("ROLE_USER").orElseThrow(()
+                -> new BankApiException(HttpStatus.NOT_FOUND,"no role named ROLE_USER found"));
         user.setRoles(Collections.singleton(roles));
 
         return user;
